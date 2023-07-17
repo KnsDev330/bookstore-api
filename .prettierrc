@@ -1,0 +1,15 @@
+{
+   "arrowParens": "always",
+   "bracketSpacing": true,
+   "endOfLine": "lf",
+   "singleQuote": false,
+   "semi": true,
+   "tabWidth": 3,
+   "useTabs": false,
+   "multilineArraysWrapThreshold": 0,
+   "printWidth": 120,
+   "proseWrap": "preserve",
+   "plugins": [
+      "./node_modules/prettier-plugin-multiline-arrays"
+   ]
+}

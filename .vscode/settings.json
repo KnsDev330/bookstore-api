@@ -1,0 +1,7 @@
+{
+   "editor.formatOnSave": true,
+   "prettier.semi": true,
+   "editor.tabSize": 3,
+   "editor.detectIndentation": false,
+   "editor.insertSpaces": true
+}
