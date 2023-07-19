@@ -11,7 +11,6 @@ const handleCastError = (error: CastError): IResponse<null> => {
       },
    ];
 
-
    return {
       code: 400,
       ok: false,

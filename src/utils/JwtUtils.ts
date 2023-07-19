@@ -10,8 +10,7 @@ const JwtUtils = {
       try {
          const data = jwt.verify(token, process.env.JWT_SECRET as string);
          return data as PayloadType;
-      }
-      catch (e: any) {
+      } catch (e: any) {
          const err = e as Error;
          throw new BadRequest(err.message);
       }

@@ -29,7 +29,9 @@ const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Respo
       ok: false,
       text: "Something went wrong",
       data: null,
-      errors: [{ path: 'any', message: `Something went wrong` }],
+      errors: [
+         { path: "any", message: `Something went wrong` },
+      ],
       stack: env.APP_ENV === EStrings.prod ? undefined : error?.stack,
    };
 
@@ -43,7 +45,8 @@ const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Respo
       error instanceof Unauthorized ||
       error instanceof BadRequest ||
       error instanceof InternalServerError
-   ) response = handleApiErrors(error);
+   )
+      response = handleApiErrors(error);
    else if (error instanceof Error) {
       response = {
          code: 500,
@@ -53,8 +56,8 @@ const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Respo
          errors: [
             {
                path: "any",
-               message: error.message
-            }
+               message: error.message,
+            },
          ],
          stack: env.APP_ENV === EStrings.prod ? undefined : error?.stack,
       };

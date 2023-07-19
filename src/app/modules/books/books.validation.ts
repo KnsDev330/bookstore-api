@@ -9,7 +9,10 @@ const BookZodSchema = {
       title: z.string({ required_error: `Book title is required` }).min(1).max(255),
       author: z.string({ required_error: `Author is required` }).min(1).max(255),
       genre: z.string({ required_error: `Genre is required` }).min(1).max(255),
-      publicationDate: z.number({ required_error: `Publication year is required` }).min(1).max(new Date().getUTCFullYear()),
+      publicationDate: z
+         .number({ required_error: `Publication year is required` })
+         .min(1)
+         .max(new Date().getUTCFullYear()),
    }),
 
    /**
@@ -20,7 +23,11 @@ const BookZodSchema = {
       title: z.string({ required_error: `Book title is required` }).min(1).max(255).optional(),
       author: z.string({ required_error: `Author is required` }).min(1).max(255).optional(),
       genre: z.string({ required_error: `Genre is required` }).min(1).max(255).optional(),
-      publicationDate: z.number({ required_error: `Publication year is required` }).min(1).max(new Date().getUTCFullYear()).optional(),
+      publicationDate: z
+         .number({ required_error: `Publication year is required` })
+         .min(1)
+         .max(new Date().getUTCFullYear())
+         .optional(),
    }),
 };
 

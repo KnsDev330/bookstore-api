@@ -2,12 +2,9 @@ import env from "../../../config/env.js";
 import { z } from "zod";
 
 const AuthZodSchema = {
-
    /* Zod schema for validating user login request */
    login: z.object({
-      email: z
-         .string({ required_error: "Email is require" })
-         .email(),
+      email: z.string({ required_error: "Email is require" }).email(),
       password: z
          .string({ required_error: "Password is require" })
          .min(env.PASSWORD_MIN_LENGTH)
@@ -16,13 +13,8 @@ const AuthZodSchema = {
 
    /* Zod schema for validating user signup request */
    signUp: z.object({
-      name: z
-         .string({ required_error: "Name is require" })
-         .min(3)
-         .max(64),
-      email: z
-         .string({ required_error: "Email is require" })
-         .email(),
+      name: z.string({ required_error: "Name is require" }).min(3).max(64),
+      email: z.string({ required_error: "Email is require" }).email(),
       password: z
          .string({ required_error: "Password is require" })
          .min(env.PASSWORD_MIN_LENGTH)

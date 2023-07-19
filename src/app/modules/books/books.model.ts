@@ -23,7 +23,7 @@ export const BookSchema = new Schema<IBook>(
          type: Schema.Types.ObjectId,
          ref: "User",
          required: true,
-      }
+      },
    },
    {
       timestamps: true,

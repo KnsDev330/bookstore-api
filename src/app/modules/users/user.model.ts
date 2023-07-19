@@ -26,9 +26,9 @@ export const UserSchema = new Schema<IUser>(
             validator: function (this: any, value: string) {
                return value === EUserRoles.USER;
             },
-            message: 'Invalid role provided'
-         }
-      }
+            message: "Invalid role provided",
+         },
+      },
    },
    {
       timestamps: true,

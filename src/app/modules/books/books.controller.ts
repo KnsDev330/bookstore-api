@@ -11,7 +11,6 @@ import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 
 const BooksController = {
-
    /* Create a new book */
    createBook: catchAsync(async (req: Request, res: Response) => {
       const book: IBook = req.body.book;
@@ -21,7 +20,6 @@ const BooksController = {
       sendResponse(res, EHttpCodes.CREATED, true, "Book created successfully", result);
    }),
 
-
    /* Delete single book */
    deleteSingleBook: catchAsync(async (req: Request, res: Response) => {
       const id = req.params.id;
@@ -30,7 +28,6 @@ const BooksController = {
       const result = await BookService.deleteSingleBookById(id);
       sendResponse(res, EHttpCodes.OK, true, "Book deleted successfully", result);
    }),
-
 
    /* Get all books */
    getAllBooks: catchAsync(async (req: Request, res: Response) => {
@@ -69,8 +66,7 @@ const BooksController = {
                   field,
                   value,
                ]) => {
-                  if (bookSeacrableFields.includes(field as keyof IBook))
-                     return { [field]: value };
+                  if (bookSeacrableFields.includes(field as keyof IBook)) return { [field]: value };
                }
             ),
          });
@@ -83,18 +79,18 @@ const BooksController = {
 
       const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
       const { result, total } = await BookService.getAllBooks(whereConditions, sortConditions, skip, limit);
-      sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, { limit, page, total });
+      sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, {
+         limit,
+         page,
+         total,
+      });
    }),
-
-
 
    /* Get single book */
    getSingleBook: catchAsync(async (req: Request, res: Response) => {
       const result = await BookService.getSingleBookById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "Book fetched successfully", result);
    }),
-
-
 
    /* Update single book */
    updateSingleBook: catchAsync(async (req: Request, res: Response) => {
@@ -103,8 +99,7 @@ const BooksController = {
       Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
 
       const payload = req.body.book as Partial<IBook>;
-      if (!payload)
-         throw new BadRequest("Updated book data must be sent in request body");
+      if (!payload) throw new BadRequest("Updated book data must be sent in request body");
       await BookZodSchema.update.parseAsync(payload);
 
       const result = await BookService.updateSingleBookById(id, payload);

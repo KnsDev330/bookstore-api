@@ -14,7 +14,7 @@
       "build": "pnpm tsc",
       "lint": "eslint . --ext .ts",
       "prettier": "prettier --write . --ignore-path .gitignore",
-      "format": "pnpm prettier && pnpm lint"
+      "format": "pnpm lint"
    },
    "dependencies": {
       "bcrypt": "^5.1.0",

@@ -11,4 +11,9 @@ export default interface IBook {
    updateddAt: string;
 }
 
-export const bookSeacrableFields: (keyof IBook)[] = ['title', 'author', 'genre', 'publicationDate'];
+export const bookSeacrableFields: (keyof IBook)[] = [
+   "title",
+   "author",
+   "genre",
+   "publicationDate",
+];

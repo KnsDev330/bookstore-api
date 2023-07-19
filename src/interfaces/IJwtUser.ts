@@ -5,5 +5,5 @@ export default interface IJwtUser {
    role: EUserRoles;
 }
 
-export interface IAccessTokenPayload extends IJwtUser { }
-export interface IRefreshTokenPayload extends IAccessTokenPayload { }
+export interface IAccessTokenPayload extends IJwtUser {}
+export interface IRefreshTokenPayload extends IAccessTokenPayload {}

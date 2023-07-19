@@ -5,7 +5,7 @@ import IResponse, { IGenericError } from "../interfaces/IResponse.js";
 const handleApiErrors = (error: any): IResponse<null> => {
    const errors: IGenericError[] = [
       {
-         path: 'any',
+         path: "any",
          message: error?.message || "Something went wrong.",
       },
    ];
