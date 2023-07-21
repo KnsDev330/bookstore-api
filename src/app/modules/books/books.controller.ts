@@ -5,15 +5,15 @@ import { SortOrder } from "mongoose";
 import EHttpCodes from "../../../enums/EHttpCodes.js";
 import BookZodSchema from "./books.validation.js";
 import BookService from "./books.service.js";
-import IBook, { bookSeacrableFields } from "./books.interface.js";
+import IBook, { searchableFields } from "./books.interface.js";
 import Utils from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 
 const BooksController = {
    /* Create a new book */
-   createBook: catchAsync(async (req: Request, res: Response) => {
-      const book: IBook = req.body.book;
+   create: catchAsync(async (req: Request, res: Response) => {
+      const book: IBook = req.body;
       await BookZodSchema.create.parseAsync(book);
       book.user = req.user?.id as string;
       const result = await BookService.create(book);
@@ -21,7 +21,7 @@ const BooksController = {
    }),
 
    /* Delete single book */
-   deleteSingleBook: catchAsync(async (req: Request, res: Response) => {
+   deleteOne: catchAsync(async (req: Request, res: Response) => {
       const id = req.params.id;
       const dbBook = await BookService.getSingleBookById(id);
       Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
@@ -30,7 +30,7 @@ const BooksController = {
    }),
 
    /* Get all books */
-   getAllBooks: catchAsync(async (req: Request, res: Response) => {
+   getAll: catchAsync(async (req: Request, res: Response) => {
       const {
          searchTerm,
          page: rawPage,
@@ -50,7 +50,7 @@ const BooksController = {
 
       if (searchTerm) {
          andConditions.push({
-            $or: bookSeacrableFields.map((field) => ({
+            $or: searchableFields.map((field) => ({
                [field]: {
                   $regex: searchTerm,
                   $options: "i",
@@ -66,7 +66,7 @@ const BooksController = {
                   field,
                   value,
                ]) => {
-                  if (bookSeacrableFields.includes(field as keyof IBook)) return { [field]: value };
+                  if (searchableFields.includes(field as keyof IBook)) return { [field]: value };
                }
             ),
          });
@@ -87,18 +87,18 @@ const BooksController = {
    }),
 
    /* Get single book */
-   getSingleBook: catchAsync(async (req: Request, res: Response) => {
+   getOne: catchAsync(async (req: Request, res: Response) => {
       const result = await BookService.getSingleBookById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "Book fetched successfully", result);
    }),
 
    /* Update single book */
-   updateSingleBook: catchAsync(async (req: Request, res: Response) => {
+   updateOne: catchAsync(async (req: Request, res: Response) => {
       const id = req.params.id;
       const dbBook = await BookService.getSingleBookById(id);
       Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
 
-      const payload = req.body.book as Partial<IBook>;
+      const payload = req.body as Partial<IBook>;
       if (!payload) throw new BadRequest("Updated book data must be sent in request body");
       await BookZodSchema.update.parseAsync(payload);
 

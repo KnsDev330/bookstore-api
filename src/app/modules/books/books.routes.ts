@@ -3,10 +3,10 @@ import AuthMidware from "../../../app/middlewares/AuthMidware.js";
 import BooksController from "./books.controller.js";
 const bookRoutes = express.Router();
 
-bookRoutes.get("/", BooksController.getAllBooks);
-bookRoutes.get("/:id", BooksController.getSingleBook);
-bookRoutes.post("/", AuthMidware(), BooksController.createBook);
-bookRoutes.patch("/:id", AuthMidware(), BooksController.updateSingleBook);
-bookRoutes.delete("/:id", AuthMidware(), BooksController.deleteSingleBook);
+bookRoutes.get("/", BooksController.getAll);
+bookRoutes.get("/:id", BooksController.getOne);
+bookRoutes.post("/", AuthMidware(), BooksController.create);
+bookRoutes.patch("/:id", AuthMidware(), BooksController.updateOne);
+bookRoutes.delete("/:id", AuthMidware(), BooksController.deleteOne);
 
 export default bookRoutes;

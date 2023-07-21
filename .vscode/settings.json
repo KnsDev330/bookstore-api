@@ -3,5 +3,7 @@
    "prettier.semi": true,
    "editor.tabSize": 3,
    "editor.detectIndentation": false,
-   "editor.insertSpaces": true
+   "editor.insertSpaces": true,
+   "prettier.singleQuote": true,
+   "prettier.printWidth": 120
 }

@@ -29,6 +29,12 @@ export const UserSchema = new Schema<IUser>(
             message: "Invalid role provided",
          },
       },
+      dp: {
+         type: String,
+         required: true,
+         default: '/dps/1.svg',
+         enum: ['/dps/1.svg', '/dps/2.svg', '/dps/3.svg', '/dps/4.svg', '/dps/5.svg', '/dps/6.svg', '/dps/7.svg', '/dps/8.svg', '/dps/9.svg', '/dps/10.svg']
+      }
    },
    {
       timestamps: true,
