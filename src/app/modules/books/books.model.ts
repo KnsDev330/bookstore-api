@@ -19,11 +19,21 @@ export const BookSchema = new Schema<IBook>(
          type: Number,
          required: true,
       },
-      user: {
+      userId: {
          type: Schema.Types.ObjectId,
          ref: "User",
          required: true,
       },
+      rating: {
+         type: Number,
+         required: true,
+         default: 0
+      },
+      reviews: {
+         type: Number,
+         required: true,
+         default: 0
+      }
    },
    {
       timestamps: true,

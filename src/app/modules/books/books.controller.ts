@@ -16,7 +16,7 @@ const BooksController = {
 
       const book: IBook = req.body;
       await BookZodSchema.create.parseAsync(book);
-      book.user = req.user?.id as string;
+      book.userId = req.user!.id;
       const result = await BookService.create(book);
       sendResponse(res, EHttpCodes.CREATED, true, "Book created successfully", result);
    }),
@@ -25,9 +25,9 @@ const BooksController = {
       await sleep();
 
       const id = req.params.id;
-      const dbBook = await BookService.getSingleBookById(id);
-      Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
-      const result = await BookService.deleteSingleBookById(id);
+      const dbBook = await BookService.getOneById(id);
+      Utils.checkPermission(req.user!, dbBook.userId as string, EUserRoles.ADMIN);
+      const result = await BookService.deleteOneById(id);
       sendResponse(res, EHttpCodes.OK, true, "Book deleted successfully", result);
    }),
 
@@ -81,7 +81,7 @@ const BooksController = {
       }
 
       const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-      const { result, total } = await BookService.getAllBooks(whereConditions, sortConditions, skip, limit);
+      const { result, total } = await BookService.getAll(whereConditions, sortConditions, skip, limit);
       sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, {
          limit,
          page,
@@ -92,7 +92,7 @@ const BooksController = {
    getOne: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
-      const result = await BookService.getSingleBookById(req.params.id);
+      const result = await BookService.getOneById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "Book fetched successfully", result);
    }),
 
@@ -100,14 +100,14 @@ const BooksController = {
       await sleep();
 
       const id = req.params.id;
-      const dbBook = await BookService.getSingleBookById(id);
-      Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
+      const dbBook = await BookService.getOneById(id);
+      Utils.checkPermission(req.user!, dbBook.userId, EUserRoles.ADMIN);
 
       const payload = req.body as Partial<IBook>;
       if (!payload) throw new BadRequest("Updated book data must be sent in request body");
       await BookZodSchema.update.parseAsync(payload);
 
-      const result = await BookService.updateSingleBookById(id, payload);
+      const result = await BookService.updateOneById(id, payload);
       sendResponse(res, EHttpCodes.OK, true, "Book updated successfully", result);
    }),
 };

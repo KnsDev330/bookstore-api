@@ -4,16 +4,10 @@ import Utils from "../../../utils/utils.js";
 import IReview, { updateableFields } from "./reviews.interface.js";
 import Review from "./reviews.model.js";
 import ReviewZodSchema from "./reviews.validation.js";
+import { create } from "./services/create.js";
 
 const ReviewsService = {
-
-   create: async (data: IReview) => {
-      const review = await Review.create(data);
-      review.__v = undefined;
-      return review;
-   },
-
-
+   create,
    getOneById: async (id: string) => {
       const review = await Review.findById(id, { __v: false });
       if (!review)

@@ -3,12 +3,12 @@ import IReview from "./reviews.interface.js";
 
 export const ReviewsSchema = new Schema<IReview>(
    {
-      user: {
+      userId: {
          type: Schema.Types.ObjectId,
          ref: "User",
          required: true,
       },
-      book: {
+      bookId: {
          type: Schema.Types.ObjectId,
          ref: "Book",
          required: true,

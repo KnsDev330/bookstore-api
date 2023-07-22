@@ -3,11 +3,13 @@ import { Document } from "mongoose";
 
 export default interface IBook extends Document {
    _id: string | ObjectId;
-   user: ObjectId | string;
+   userId: ObjectId | string;
    title: string;
    author: string;
    genre: string;
    publicationDate: number;
+   rating: number;
+   reviews: number;
    createdAt: string;
    updatedAt: string;
 }

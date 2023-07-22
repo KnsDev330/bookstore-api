@@ -18,7 +18,7 @@ const AuthController = {
       await AuthZodSchema.login.parseAsync(req.body);
       const { email, password } = req.body;
 
-      const user = await UserService.getSingleUserByQuery({ email }, undefined, true);
+      const user = await UserService.getOneByQuery({ email }, undefined, true);
       await PasswordUtils.validatePassword(password, user.password as string);
       user.password = undefined;
 
@@ -32,11 +32,11 @@ const AuthController = {
       await sleep();
 
       await AuthZodSchema.signUp.parseAsync(req.body);
-      const user = await UserService.createSingleUser(req.body);
+      const user = await UserService.create(req.body);
       const accessToken = JwtUtils.encrypt({ id: user._id, role: user.role }, env.ACCESS_TOKEN_EXPIRATION);
       const refreshToken = JwtUtils.encrypt({ id: user._id, role: user.role }, env.REFRESH_TOKEN_EXPIRATION);
       res.cookie("refreshToken", refreshToken, { httpOnly: true });
-      sendResponse(res, EHttpCodes.OK, true, "Signup successful", { accessToken });
+      sendResponse(res, EHttpCodes.OK, true, "Signup successful", { user, accessToken });
    }),
 
    refreshToken: catchAsync(async (req: Request, res: Response) => {

@@ -10,25 +10,31 @@ import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 
 const UserController = {
-   /* Create a new user */
+   getMyProfile: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+      const user = await UserService.getOneById(req.user?.id!);
+      sendResponse(res, EHttpCodes.OK, true, "User data retrieved successfully", user);
+   }),
+
+
    deleteSingleUser: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
       Utils.checkPermission(req.user!, "", EUserRoles.ADMIN);
-      const deletedUserData = await UserService.deleteSingleUserById(req.params.id);
-      sendResponse(res, EHttpCodes.OK, true, "User deleted successfully", deletedUserData);
+      const deletedUserData = await UserService.deleteOneById(req.params.id);
+      sendResponse(res, EHttpCodes.OK, true, "Deleted successfully", deletedUserData);
    }),
 
-   /* Get single user */
+
    getSingleUser: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
-      const user = await UserService.getSingleUserById(req.params.id);
+      const user = await UserService.getOneById(req.params.id);
       Utils.checkPermission(req.user!, user._id, EUserRoles.ADMIN);
       sendResponse(res, EHttpCodes.OK, true, "User retrieved successfully", user);
    }),
 
-   /* Get all users */
+
    getUsers: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
@@ -37,7 +43,7 @@ const UserController = {
       const pageRaw = Number(rawPage || 1);
       const page = pageRaw < 1 ? 1 : pageRaw;
       const skip = limit * page - limit;
-      const { total, users } = await UserService.getAllUsers(limit, skip);
+      const { total, users } = await UserService.getAll(limit, skip);
       sendResponse(res, EHttpCodes.OK, true, "Users retrieved successfully", users, undefined, undefined, {
          limit,
          page,
@@ -45,7 +51,7 @@ const UserController = {
       });
    }),
 
-   /* Update single user */
+
    updateSingleUser: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
@@ -53,10 +59,10 @@ const UserController = {
       if (!payload) throw new BadRequest("Updated User data must be sent as request body");
       await UserZodSchema.update.parseAsync(payload);
 
-      const user = await UserService.getSingleUserById(req.params.id);
+      const user = await UserService.getOneById(req.params.id);
       Utils.checkPermission(req.user!, user._id, EUserRoles.ADMIN);
 
-      const updatedUser = await UserService.updateSingleUserById(req.params.id, payload);
+      const updatedUser = await UserService.updateOneById(req.params.id, payload);
       sendResponse(res, EHttpCodes.OK, true, "User updated successfully", updatedUser);
    }),
 };

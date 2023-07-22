@@ -4,8 +4,8 @@ import { Document } from "mongoose";
 
 export default interface IReview extends Document {
    _id: string | ObjectId;
-   user: ObjectId | string;
-   book: ObjectId | string;
+   userId: ObjectId | string;
+   bookId: ObjectId | string;
    userName: string;
    userDp: string;
    rating: number;

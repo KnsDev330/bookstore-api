@@ -9,6 +9,11 @@ export default interface IUser extends Document {
    email: string;
    password?: string;
    dp: string;
+   counters: {
+      reads: number;
+      books: number;
+      reviews: number;
+   }
    createdAt: string;
    updatedAt: string;
 }

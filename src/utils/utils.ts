@@ -4,6 +4,7 @@ import { ObjectId } from "mongodb";
 
 
 export const sleep = (ms: number = 600) => new Promise(r => setTimeout(() => r(''), ms));
+export const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 const Utils = {
    checkPermission: (user: IJwtUser, resourceUserId: string | ObjectId, ...allowedRoles: string[]): void => {
