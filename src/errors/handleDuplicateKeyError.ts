@@ -7,7 +7,7 @@ const handleDuplicateKeyError = (error: MongoServerError): IResponse<null> => {
    const errors: IGenericError[] = [
       {
          path: Object.keys(error.keyPattern)[0],
-         message: "Value for this field is already taken",
+         message: "already taken",
       },
    ];
    return {

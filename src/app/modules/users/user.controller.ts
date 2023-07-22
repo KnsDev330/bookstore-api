@@ -5,13 +5,15 @@ import UserService from "./user.service.js";
 import sendResponse from "../../../utils/sendResponse.js";
 import IUser from "./user.interface.js";
 import EHttpCodes from "../../../enums/EHttpCodes.js";
-import Utils from "../../../utils/utils.js";
+import Utils, { sleep } from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 
 const UserController = {
    /* Create a new user */
    deleteSingleUser: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       Utils.checkPermission(req.user!, "", EUserRoles.ADMIN);
       const deletedUserData = await UserService.deleteSingleUserById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "User deleted successfully", deletedUserData);
@@ -19,6 +21,8 @@ const UserController = {
 
    /* Get single user */
    getSingleUser: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const user = await UserService.getSingleUserById(req.params.id);
       Utils.checkPermission(req.user!, user._id, EUserRoles.ADMIN);
       sendResponse(res, EHttpCodes.OK, true, "User retrieved successfully", user);
@@ -26,6 +30,8 @@ const UserController = {
 
    /* Get all users */
    getUsers: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const { limit: rawLimit, page: rawPage } = req.query;
       const limit = Number(rawLimit || 10);
       const pageRaw = Number(rawPage || 1);
@@ -41,6 +47,8 @@ const UserController = {
 
    /* Update single user */
    updateSingleUser: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const payload: Partial<IUser> = req.body;
       if (!payload) throw new BadRequest("Updated User data must be sent as request body");
       await UserZodSchema.update.parseAsync(payload);

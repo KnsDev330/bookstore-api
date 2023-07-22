@@ -6,13 +6,14 @@ import EHttpCodes from "../../../enums/EHttpCodes.js";
 import BookZodSchema from "./books.validation.js";
 import BookService from "./books.service.js";
 import IBook, { searchableFields } from "./books.interface.js";
-import Utils from "../../../utils/utils.js";
+import Utils, { sleep } from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 
 const BooksController = {
-   /* Create a new book */
    create: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const book: IBook = req.body;
       await BookZodSchema.create.parseAsync(book);
       book.user = req.user?.id as string;
@@ -20,8 +21,9 @@ const BooksController = {
       sendResponse(res, EHttpCodes.CREATED, true, "Book created successfully", result);
    }),
 
-   /* Delete single book */
    deleteOne: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const id = req.params.id;
       const dbBook = await BookService.getSingleBookById(id);
       Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
@@ -29,8 +31,9 @@ const BooksController = {
       sendResponse(res, EHttpCodes.OK, true, "Book deleted successfully", result);
    }),
 
-   /* Get all books */
    getAll: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const {
          searchTerm,
          page: rawPage,
@@ -86,14 +89,16 @@ const BooksController = {
       });
    }),
 
-   /* Get single book */
    getOne: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const result = await BookService.getSingleBookById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "Book fetched successfully", result);
    }),
 
-   /* Update single book */
    updateOne: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const id = req.params.id;
       const dbBook = await BookService.getSingleBookById(id);
       Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);

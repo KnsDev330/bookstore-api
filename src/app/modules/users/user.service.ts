@@ -19,8 +19,10 @@ const UserService = {
    },
 
    /* get a single user by query */
-   getSingleUserByQuery: async (query: any, projection?: any) => {
-      const user = await User.findOne(query, projection || {});
+   getSingleUserByQuery: async (query: any, projection?: any, selectPassword: boolean = false) => {
+      let q = User.findOne(query, projection || {});
+      if (selectPassword) q = q.select('+password');
+      const user = await q;
       if (!user) throw new BadRequest(`User not found`);
       return user;
    },
@@ -37,17 +39,6 @@ const UserService = {
    /* update a single user */
    updateSingleUserById: async (id: string, payload: Partial<IUser>) => {
       const newUserData: Partial<IUser> = payload;
-
-      // if (name) {
-      //    const nameKeys = Object.keys(name);
-      //    if (name && nameKeys.length > 0) {
-      //       nameKeys.forEach((key) => {
-      //          const nameKey = `name.${key}`;
-      //          (newUserData as any)[nameKey] = name[key as keyof typeof name];
-      //       });
-      //    }
-      // }
-
       if (newUserData.password) newUserData.password = await PasswordUtils.hashPassword(newUserData.password);
       const user = await User.findByIdAndUpdate(id, newUserData, { new: true });
       if (!user) throw new InternalServerError(`Could not update user`);

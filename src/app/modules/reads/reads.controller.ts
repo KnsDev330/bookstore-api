@@ -3,7 +3,7 @@ import catchAsync from "../../../utils/catchASync.js";
 import sendResponse from "../../../utils/sendResponse.js";
 import { SortOrder } from "mongoose";
 import EHttpCodes from "../../../enums/EHttpCodes.js";
-import Utils from "../../../utils/utils.js";
+import Utils, { sleep } from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 import IReads from "./reads.interface.js";
@@ -13,6 +13,8 @@ import { ObjectId } from "mongodb";
 
 const ReadsController = {
    create: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const payload: IReads = req.body;
       await ReadZodSchema.create.parseAsync(payload);
       if (await ReadsService.getOneByQuery({ user: new ObjectId(req.user!.id), book: new ObjectId(payload.book) }))
@@ -24,6 +26,8 @@ const ReadsController = {
 
 
    deleteById: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const id = req.params.id;
       const dbRead = await ReadsService.getOneById(id);
       Utils.checkPermission(req.user!, dbRead.user as string, EUserRoles.ADMIN);
@@ -33,6 +37,8 @@ const ReadsController = {
 
 
    getAll: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const { page, limit, skip, sortBy, sortOrder } = Utils.pageLimit(req.query);
       const sortConditions: { [key: string]: SortOrder } = { [sortBy]: sortOrder as SortOrder }
 
@@ -42,6 +48,8 @@ const ReadsController = {
 
 
    updateOne: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+
       const payload = req.body as Partial<IReads>;
       if (!Object.keys(payload).length)
          throw new BadRequest("Updated book read list data must be sent in request body");

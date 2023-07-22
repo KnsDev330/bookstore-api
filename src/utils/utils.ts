@@ -2,6 +2,9 @@ import IJwtUser from "../interfaces/IJwtUser.js";
 import { BadRequest, Unauthorized } from "../errors/ApiErrors.js";
 import { ObjectId } from "mongodb";
 
+
+export const sleep = (ms: number = 600) => new Promise(r => setTimeout(() => r(''), ms));
+
 const Utils = {
    checkPermission: (user: IJwtUser, resourceUserId: string | ObjectId, ...allowedRoles: string[]): void => {
       if (typeof resourceUserId !== 'string')
