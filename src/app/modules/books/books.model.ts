@@ -33,6 +33,10 @@ export const BookSchema = new Schema<IBook>(
          type: Number,
          required: true,
          default: 0
+      },
+      image: {
+         type: String,
+         required: true
       }
    },
    {

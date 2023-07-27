@@ -14,6 +14,9 @@ import handleCastError from "./handleCastError.js";
 import handleDuplicateKeyError from "./handleDuplicateKeyError.js";
 import { ApiError, Forbidden, Unauthorized, BadRequest, InternalServerError } from "./ApiErrors.js";
 import handleApiErrors from "./handleApiErrors.js";
+import handleJwtExpiredError from "./handleJwtErrors.js";
+import jwtPkg from "jsonwebtoken";
+const { TokenExpiredError } = jwtPkg;
 
 const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Response, next: NextFunction) => {
    console.log(`GlobalErrorHandler ~~`, { error });
@@ -39,6 +42,15 @@ const globalErrorHandler: ErrorRequestHandler = (error, req: Request, res: Respo
    else if (error instanceof ZodError) response = handleZodError(error);
    else if (error?.name === "CastError") response = handleCastError(error);
    else if (error?.name === "MongoServerError") response = handleDuplicateKeyError(error);
+   else if (error instanceof TokenExpiredError) {
+      console.log('-----------------------------------------------');
+      console.log('-----------------------------------------------');
+      console.log('-----------------------------------------------');
+      console.log('-----------------------------------------------');
+      console.log('-----------------------------------------------');
+
+      response = handleJwtExpiredError(error);
+   }
    else if (
       error instanceof ApiError ||
       error instanceof Forbidden ||

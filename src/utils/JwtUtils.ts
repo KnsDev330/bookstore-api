@@ -1,4 +1,3 @@
-import { BadRequest } from "../errors/ApiErrors.js";
 import jwt from "jsonwebtoken";
 
 const JwtUtils = {
@@ -7,13 +6,8 @@ const JwtUtils = {
       return token;
    },
    decrypt: <PayloadType>(token: string): PayloadType => {
-      try {
-         const data = jwt.verify(token, process.env.JWT_SECRET as string);
-         return data as PayloadType;
-      } catch (e: any) {
-         const err = e as Error;
-         throw new BadRequest(err.message);
-      }
+      const data = jwt.verify(token, process.env.JWT_SECRET as string);
+      return data as PayloadType;
    },
 };
 

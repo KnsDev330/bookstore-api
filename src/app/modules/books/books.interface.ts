@@ -10,11 +10,12 @@ export default interface IBook extends Document {
    publicationDate: number;
    rating: number;
    reviews: number;
+   image: string;
    createdAt: string;
    updatedAt: string;
 }
 
 
 export const searchableFields: (keyof IBook)[] = ['title', 'author', 'genre'];
-export const updateableFields: (keyof IBook)[] = ['title', 'author', 'genre', 'publicationDate'];
+export const updateableFields: (keyof IBook)[] = ['title', 'author', 'genre', 'publicationDate', 'image'];
 export const sortableFields: (keyof IBook)[] = ['title', 'author', 'genre', 'publicationDate'];
