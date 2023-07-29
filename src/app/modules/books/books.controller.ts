@@ -108,6 +108,7 @@ const BooksController = {
 
       const id = req.params.id;
       const dbBook = await BookService.getOneById(id);
+
       Utils.checkPermission(req.user!, dbBook.userId, EUserRoles.ADMIN);
 
       const payload = req.body as Partial<IBook>;
