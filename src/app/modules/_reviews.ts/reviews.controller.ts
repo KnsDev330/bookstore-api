@@ -41,7 +41,7 @@ const ReviewsController = {
 
       const where = bookId ? { book: new ObjectId(bookId as string) } : { user: new ObjectId(req.user!.id) };
       const { result, total } = await ReviewsService.getAll(where, sortConditions, skip, limit);
-      sendResponse(res, EHttpCodes.OK, true, "Reviews fetched", result, undefined, undefined, { limit, page, total });
+      sendResponse(res, EHttpCodes.OK, true, "Reviews fetched", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
 
 

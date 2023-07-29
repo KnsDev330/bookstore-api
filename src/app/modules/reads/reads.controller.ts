@@ -43,7 +43,7 @@ const ReadsController = {
       const sortConditions: { [key: string]: SortOrder } = { [sortBy]: sortOrder as SortOrder }
 
       const { result, total } = await ReadsService.getAll({ user: new ObjectId(req.user!.id) }, sortConditions, skip, limit);
-      sendResponse(res, EHttpCodes.OK, true, "Books fetched from read list", result, undefined, undefined, { limit, page, total });
+      sendResponse(res, EHttpCodes.OK, true, "Books fetched from read list", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
 
 

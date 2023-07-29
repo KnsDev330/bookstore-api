@@ -9,6 +9,8 @@ import IBook, { searchableFields } from "./books.interface.js";
 import Utils, { sleep } from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
+import ISortOrder from "interfaces/ISortOrder.js";
+import { ObjectId } from "mongodb";
 
 const BooksController = {
    create: catchAsync(async (req: Request, res: Response) => {
@@ -82,11 +84,16 @@ const BooksController = {
 
       const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
       const { result, total } = await BookService.getAll(whereConditions, sortConditions, skip, limit);
-      sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, {
-         limit,
-         page,
-         total,
-      });
+      sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
+   }),
+
+   getAllMy: catchAsync(async (req: Request, res: Response) => {
+      await sleep();
+      const { page, limit, skip, sortBy, sortOrder } = Utils.pageLimit(req.query);
+      const sortConditions: ISortOrder = { [sortBy as string]: sortOrder as SortOrder }
+
+      const { result, total } = await BookService.getAll<Partial<IBook>>({ userId: new ObjectId(req.user!.id) }, sortConditions, skip, limit);
+      sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
 
    getOne: catchAsync(async (req: Request, res: Response) => {

@@ -1,4 +1,4 @@
-import { SortOrder } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 import IBook from "./books.interface.js";
 import Book from "./books.model.js";
 import { BadRequest, InternalServerError } from "../../../errors/ApiErrors.js";
@@ -33,9 +33,10 @@ const BookService = {
    },
 
 
-   getAll: async (whereConditions: any, sortConditions: { [key: string]: SortOrder }, skip: number, limit: number) => {
-      const result = await Book.find(whereConditions, { __v: false }).sort(sortConditions).skip(skip).limit(limit);
-      const total = await Book.countDocuments(whereConditions);
+   getAll: async <T>(whereConditions: T, sortConditions: { [key: string]: SortOrder }, skip: number, limit: number) => {
+      const newWhereCond = whereConditions as FilterQuery<IBook>;
+      const result = await Book.find(newWhereCond, { __v: false }).sort(sortConditions).skip(skip).limit(limit);
+      const total = await Book.countDocuments(newWhereCond);
       return { result, total };
    },
 };

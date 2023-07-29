@@ -44,11 +44,7 @@ const UserController = {
       const page = pageRaw < 1 ? 1 : pageRaw;
       const skip = limit * page - limit;
       const { total, users } = await UserService.getAll(limit, skip);
-      sendResponse(res, EHttpCodes.OK, true, "Users retrieved successfully", users, undefined, undefined, {
-         limit,
-         page,
-         total,
-      });
+      sendResponse(res, EHttpCodes.OK, true, "Users retrieved successfully", users, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
 
 
