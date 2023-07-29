@@ -3,12 +3,12 @@ import IReads, { EReadStates } from "./reads.interface.js";
 
 export const ReadsSchema = new Schema<IReads>(
    {
-      user: {
+      userId: {
          type: Schema.Types.ObjectId,
          ref: "User",
          required: true,
       },
-      book: {
+      bookId: {
          type: Schema.Types.ObjectId,
          ref: "Book",
          required: true,

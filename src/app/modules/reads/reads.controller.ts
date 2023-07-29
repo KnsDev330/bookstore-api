@@ -17,9 +17,9 @@ const ReadsController = {
 
       const payload: IReads = req.body;
       await ReadZodSchema.create.parseAsync(payload);
-      if (await ReadsService.getOneByQuery({ user: new ObjectId(req.user!.id), book: new ObjectId(payload.book) }))
+      if (await ReadsService.getOneByQuery({ userId: new ObjectId(req.user!.id), bookId: new ObjectId(payload.bookId) }, false))
          throw new BadRequest(`You already have that book in your read list`);
-      payload.user = req.user?.id as string;
+      payload.userId = req.user?.id as string;
       const result = await ReadsService.create(payload);
       sendResponse(res, EHttpCodes.CREATED, true, "Book added to read list", result);
    }),
@@ -30,7 +30,7 @@ const ReadsController = {
 
       const id = req.params.id;
       const dbRead = await ReadsService.getOneById(id);
-      Utils.checkPermission(req.user!, dbRead.user as string, EUserRoles.ADMIN);
+      Utils.checkPermission(req.user!, dbRead.userId as string, EUserRoles.ADMIN);
       const result = await ReadsService.deleteOneById(id);
       sendResponse(res, EHttpCodes.OK, true, "Book removed from read list", result);
    }),
@@ -57,7 +57,7 @@ const ReadsController = {
 
       const id = req.params.id;
       const dbBook = await ReadsService.getOneById(id);
-      Utils.checkPermission(req.user!, dbBook.user as string, EUserRoles.ADMIN);
+      Utils.checkPermission(req.user!, dbBook.userId as string, EUserRoles.ADMIN);
 
       const updatedRead = await ReadsService.updateOneById(id, payload);
       sendResponse(res, EHttpCodes.OK, true, "Book in read list updated", updatedRead);

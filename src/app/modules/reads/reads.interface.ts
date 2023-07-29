@@ -11,8 +11,8 @@ export enum EReadStates {
 
 export default interface IReads extends Document {
    _id: string | ObjectId;
-   user: ObjectId | string;
-   book: ObjectId | string;
+   userId: ObjectId | string;
+   bookId: ObjectId | string;
    state: EReadStates;
    createdAt: string;
    updateddAt: string;
