@@ -42,7 +42,12 @@ const ReadsController = {
       const { page, limit, skip, sortBy, sortOrder } = Utils.pageLimit(req.query);
       const sortConditions: { [key: string]: SortOrder } = { [sortBy]: sortOrder as SortOrder }
 
-      const { result, total } = await ReadsService.getAll({ user: new ObjectId(req.user!.id) }, sortConditions, skip, limit);
+      const state = typeof req.query.state === 'string' ? req.query.state.toLowerCase() : 'all';
+      const query: any = { userId: new ObjectId(req.user!.id) };
+      if (state !== 'all')
+         query.state = req.query.state;
+
+      const { result, total } = await ReadsService.getAll(query, sortConditions, skip, limit);
       sendResponse(res, EHttpCodes.OK, true, "Books fetched from read list", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
 

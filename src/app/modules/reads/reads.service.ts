@@ -49,7 +49,7 @@ const ReadsService = {
       skip: number,
       limit: number
    ) => {
-      const result = await Reads.find(whereConditions, { __v: false }).sort(sortConditions).skip(skip).limit(limit);
+      const result = await Reads.find(whereConditions, { __v: false }).sort(sortConditions).skip(skip).limit(limit).populate('bookId', { title: true, image: true });
       const total = await Reads.countDocuments(whereConditions);
       return { result, total };
    },
