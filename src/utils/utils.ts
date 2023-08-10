@@ -21,19 +21,23 @@ const Utils = {
    },
 
 
-   pageLimit: (query: { [key: string]: any }): { page: number, limit: number, skip: number, sortBy: string, sortOrder: string } => {
+   pageLimit: (
+      query: { [key: string]: any }
+   ): { page: number, limit: number, skip: number, sortBy: string, sortOrder: string, searchTerm?: string, filtersData: { [key: string]: string } } => {
       const {
          page: rawPage,
          limit: rawLimit,
          sortBy: rawSortBy,
          sortOrder: rawSortOrder,
+         searchTerm,
+         ...filtersData
       } = query;
       const page = Number(rawPage || 1);
       const limit = Number(rawLimit || 10);
       const skip = (page - 1) * limit;
       const sortBy = rawSortBy || "createdAt";
       const sortOrder = rawSortOrder || "desc";
-      return { page, limit, skip, sortBy, sortOrder }
+      return { page, limit, skip, sortBy, sortOrder, searchTerm, filtersData }
    }
 };
 

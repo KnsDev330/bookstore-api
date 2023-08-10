@@ -11,6 +11,7 @@ import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest } from "../../../errors/ApiErrors.js";
 import ISortOrder from "interfaces/ISortOrder.js";
 import { ObjectId } from "mongodb";
+import { log } from "console";
 
 const BooksController = {
    create: catchAsync(async (req: Request, res: Response) => {
@@ -36,23 +37,9 @@ const BooksController = {
    getAll: catchAsync(async (req: Request, res: Response) => {
       await sleep();
 
-      const {
-         searchTerm,
-         page: rawPage,
-         limit: rawLimit,
-         sortBy: rawSortBy,
-         sortOrder: rawSortOrder,
-         ...filtersData
-      } = req.query;
-
-      const page = Number(rawPage || 1);
-      const limit = Number(rawLimit || 10);
-      const skip = (page - 1) * limit;
-      const sortBy = rawSortBy || "createdAt";
-      const sortOrder = rawSortOrder || "desc";
+      const { page, limit, skip, sortBy, sortOrder, searchTerm, filtersData } = Utils.pageLimit(req.query);
 
       const andConditions = [];
-
       if (searchTerm) {
          andConditions.push({
             $or: searchableFields.map((field) => ({
@@ -63,18 +50,23 @@ const BooksController = {
             })),
          });
       }
-
-      if (Object.keys(filtersData).length) {
-         andConditions.push({
-            $and: Object.entries(filtersData).map(
-               ([
-                  field,
-                  value,
-               ]) => {
-                  if (searchableFields.includes(field as keyof IBook)) return { [field]: value };
-               }
-            ),
-         });
+      const { dateRange } = filtersData;
+      if (dateRange) {
+         const [min, max] = dateRange.split("-");
+         if (min && max) {
+            andConditions.push({ publicationDate: { $gte: Number(min), $lte: Number(max) } })
+         }
+      }
+      log({ filtersData })
+      const newConds: { [key: string]: string } = {};
+      if (filtersData) {
+         Object.entries(filtersData).map(([field, value]) => {
+            if (searchableFields.includes(field as keyof IBook))
+               newConds[field] = value;
+         })
+         log({ newConds })
+         if (Object.keys(newConds).length)
+            andConditions.push({ ...newConds })
       }
 
       const sortConditions: { [key: string]: SortOrder } = {};
@@ -83,6 +75,7 @@ const BooksController = {
       }
 
       const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
+      log(JSON.stringify({ whereConditions, sortConditions }))
       const { result, total } = await BookService.getAll(whereConditions, sortConditions, skip, limit);
       sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),
