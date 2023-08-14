@@ -14,9 +14,9 @@ async function boot() {
    let server: Server;
 
    try {
-      console.info(`🛢 connesting to db`);
+      console.info(`🛢 connecting to db`);
       await mongoose.connect(
-         `mongodb+srv://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@cluster0.apugylf.mongodb.net/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority`
+         `mongodb://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@172.17.0.2:27017/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority&authSource=admin`
       );
       console.info(`✅ db connected`);
 
