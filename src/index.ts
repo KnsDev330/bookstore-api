@@ -16,7 +16,7 @@ async function boot() {
    try {
       console.info(`🛢 connecting to db`);
       await mongoose.connect(
-         `mongodb://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@172.17.0.2:27017/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority&authSource=admin`
+         `mongodb://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@${env.DATABASE_URI_HOST}:${env.DATABASE_URI_PORT}/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority&authSource=${env.DATABASE_URI_SOURCE}`
       );
       console.info(`✅ db connected`);
 
