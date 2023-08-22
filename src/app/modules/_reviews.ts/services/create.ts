@@ -13,8 +13,7 @@ export const create = async (userId: string, payload: IReview) => {
    payload.userId = user._id;
    payload.userDp = user.dp;
    payload.userName = user.name;
-   const newRating = Number(((dbBook.rating + payload.rating) / dbBook.reviews + 1).toFixed(1));
-
+   const newRating = Number((((dbBook.rating * dbBook.reviews) + payload.rating) / (dbBook.reviews + 1)).toFixed(1));
    const session = await mongoose.startSession();
    session.startTransaction();
    try {

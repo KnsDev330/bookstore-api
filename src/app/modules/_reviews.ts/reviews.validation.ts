@@ -3,7 +3,7 @@ import { z } from "zod";
 const ReviewZodSchema = {
 
    create: z.object({
-      book: z.string({ required_error: `Book ID is required` }).min(1).max(255),
+      bookId: z.string({ required_error: `Book ID is required` }).min(1).max(255),
       comment: z.string().min(5).max(255).default(''),
       rating: z.number({ required_error: `Rating is required` }).int().min(1).max(5),
    }),
