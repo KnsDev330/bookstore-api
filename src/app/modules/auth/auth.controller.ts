@@ -9,11 +9,9 @@ import UserService from "../users/user.service.js";
 import { EStrings } from "../../../enums/strings.js";
 import EHttpCodes from "../../../enums/EHttpCodes.js";
 import { IAccessTokenPayload } from "../../../interfaces/IJwtUser.js";
-import { sleep } from "../../../utils/utils.js";
 
 const AuthController = {
    login: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       await AuthZodSchema.login.parseAsync(req.body);
       const { email, password } = req.body;
@@ -29,7 +27,6 @@ const AuthController = {
    }),
 
    signUp: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       await AuthZodSchema.signUp.parseAsync(req.body);
       const user = await UserService.create(req.body);
@@ -40,7 +37,6 @@ const AuthController = {
    }),
 
    refreshToken: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       await AuthZodSchema.refreshToken.parseAsync(req);
       const { refreshToken } = req.cookies;

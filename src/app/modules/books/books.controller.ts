@@ -6,7 +6,7 @@ import EHttpCodes from "../../../enums/EHttpCodes.js";
 import BookZodSchema from "./books.validation.js";
 import BookService from "./books.service.js";
 import IBook, { searchableFields } from "./books.interface.js";
-import Utils, { sleep } from "../../../utils/utils.js";
+import Utils from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
 import { BadRequest, InternalServerError } from "../../../errors/ApiErrors.js";
 import ISortOrder from "interfaces/ISortOrder.js";
@@ -15,7 +15,6 @@ import ReadsService from "../reads/reads.service.js";
 
 const BooksController = {
    create: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       const book: IBook = req.body;
       await BookZodSchema.create.parseAsync(book);
@@ -25,7 +24,6 @@ const BooksController = {
    }),
 
    deleteOne: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       const id = req.params.id;
       const dbBook = await BookService.getOneById(id);
@@ -48,7 +46,6 @@ const BooksController = {
    }),
 
    getAll: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       const { page, limit, skip, sortBy, sortOrder, searchTerm, filtersData } = Utils.pageLimit(req.query);
 
@@ -91,7 +88,6 @@ const BooksController = {
    }),
 
    getAllMy: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
       const { page, limit, skip, sortBy, sortOrder } = Utils.pageLimit(req.query);
       const sortConditions: ISortOrder = { [sortBy as string]: sortOrder as SortOrder }
 
@@ -100,14 +96,12 @@ const BooksController = {
    }),
 
    getOne: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       const result = await BookService.getOneById(req.params.id);
       sendResponse(res, EHttpCodes.OK, true, "Book fetched successfully", result);
    }),
 
    updateOne: catchAsync(async (req: Request, res: Response) => {
-      await sleep();
 
       const id = req.params.id;
       const dbBook = await BookService.getOneById(id);
