@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import bcrypt from "bcrypt";
 import env from "../config/env.js";
 import { Unauthorized } from "../errors/ApiErrors.js";
@@ -15,7 +14,6 @@ const PasswordUtils = {
       try {
          return await bcrypt.compare(password, hashedPassword);
       } catch (e) {
-         console.log(e);
          return false;
       }
    },

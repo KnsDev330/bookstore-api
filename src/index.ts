@@ -10,14 +10,15 @@ process.on("uncaughtException", (error) => {
    process.exit(1);
 });
 
+// const mongodb_connect_uri_old = `mongodb://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@${env.DATABASE_URI_HOST}:${env.DATABASE_URI_PORT}/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority&authSource=${env.DATABASE_URI_SOURCE}`;
+const mongodb_connect_uri = `mongodb+srv://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@cluster0.apugylf.mongodb.net/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority`;
+
 async function boot() {
    let server: Server;
 
    try {
       console.info(`🛢 connecting to db`);
-      await mongoose.connect(
-         `mongodb://${env.DATABASE_URI_USER}:${env.DATABASE_URI_PASS}@${env.DATABASE_URI_HOST}:${env.DATABASE_URI_PORT}/${env.DATABASE_URI_NAME}?retryWrites=true&w=majority&authSource=${env.DATABASE_URI_SOURCE}`
-      );
+      await mongoose.connect(mongodb_connect_uri);
       console.info(`✅ db connected`);
 
       server = app.listen(env.PORT, () => {

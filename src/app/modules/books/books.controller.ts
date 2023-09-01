@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 import catchAsync from "../../../utils/catchASync.js";
 import sendResponse from "../../../utils/sendResponse.js";
-import { SortOrder } from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import EHttpCodes from "../../../enums/EHttpCodes.js";
 import BookZodSchema from "./books.validation.js";
 import BookService from "./books.service.js";
 import IBook, { searchableFields } from "./books.interface.js";
 import Utils, { sleep } from "../../../utils/utils.js";
 import EUserRoles from "../../../enums/EUserRoles.js";
-import { BadRequest } from "../../../errors/ApiErrors.js";
+import { BadRequest, InternalServerError } from "../../../errors/ApiErrors.js";
 import ISortOrder from "interfaces/ISortOrder.js";
 import { ObjectId } from "mongodb";
-import { log } from "console";
+import ReadsService from "../reads/reads.service.js";
 
 const BooksController = {
    create: catchAsync(async (req: Request, res: Response) => {
@@ -30,8 +30,21 @@ const BooksController = {
       const id = req.params.id;
       const dbBook = await BookService.getOneById(id);
       Utils.checkPermission(req.user!, dbBook.userId as string, EUserRoles.ADMIN);
-      const result = await BookService.deleteOneById(id);
-      sendResponse(res, EHttpCodes.OK, true, "Book deleted successfully", result);
+      const session = await mongoose.startSession();
+      session.startTransaction();
+      try {
+         await ReadsService.deleteByBookId(id); // delete from read lists if present on any
+         const result = await BookService.deleteOneById(id);
+         session.commitTransaction();
+         sendResponse(res, EHttpCodes.OK, true, "Book deleted successfully", result);
+      }
+      catch (_e: any) {
+         session.abortTransaction();
+         throw new InternalServerError();
+      }
+      finally {
+         session.endSession();
+      }
    }),
 
    getAll: catchAsync(async (req: Request, res: Response) => {
@@ -57,14 +70,12 @@ const BooksController = {
             andConditions.push({ publicationDate: { $gte: Number(min), $lte: Number(max) } })
          }
       }
-      log({ filtersData })
       const newConds: { [key: string]: string } = {};
       if (filtersData) {
          Object.entries(filtersData).map(([field, value]) => {
             if (searchableFields.includes(field as keyof IBook))
                newConds[field] = value;
          })
-         log({ newConds })
          if (Object.keys(newConds).length)
             andConditions.push({ ...newConds })
       }
@@ -75,7 +86,6 @@ const BooksController = {
       }
 
       const whereConditions = andConditions.length > 0 ? { $and: andConditions } : {};
-      log(JSON.stringify({ whereConditions, sortConditions }))
       const { result, total } = await BookService.getAll(whereConditions, sortConditions, skip, limit);
       sendResponse(res, EHttpCodes.OK, true, "Books fetched successfully", result, undefined, undefined, { limit, page, total, pages: Math.ceil(total / limit) });
    }),

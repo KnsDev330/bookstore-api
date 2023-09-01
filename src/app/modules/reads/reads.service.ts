@@ -42,6 +42,12 @@ const ReadsService = {
       deletedRead.__v = undefined;
       return deletedRead;
    },
+   deleteByBookId: async (id: string) => {
+      const deletedRead = await Reads.deleteMany({ bookId: id });
+      if (!deletedRead)
+         throw new InternalServerError(`Could not delete Read data`);
+      return true;
+   },
 
    getAll: async (
       whereConditions: any,
